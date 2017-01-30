@@ -2092,6 +2092,53 @@
 							"autoResize": false,
 							"text": "Still a question",
 							"wordWrap": true
+						},
+						{
+							"_type": "UMLNoteView",
+							"_id": "AAAAAAFZ7wnzYl2+Jxo=",
+							"_parent": {
+								"$ref": "AAAAAAFF+qBtyKM79qY="
+							},
+							"visible": true,
+							"enabled": true,
+							"lineColor": "#000000",
+							"fillColor": "#ffffff",
+							"fontColor": "#000000",
+							"font": "Arial;13;0",
+							"showShadow": true,
+							"containerChangeable": false,
+							"containerExtending": false,
+							"left": 96,
+							"top": 352,
+							"width": 70,
+							"height": 40,
+							"autoResize": false,
+							"text": "RxJs",
+							"wordWrap": true
+						},
+						{
+							"_type": "UMLNoteLinkView",
+							"_id": "AAAAAAFZ7woNMV3C4zc=",
+							"_parent": {
+								"$ref": "AAAAAAFF+qBtyKM79qY="
+							},
+							"visible": true,
+							"enabled": true,
+							"lineColor": "#000000",
+							"fillColor": "#ffffff",
+							"fontColor": "#000000",
+							"font": "Arial;13;0",
+							"showShadow": true,
+							"containerChangeable": false,
+							"containerExtending": false,
+							"head": {
+								"$ref": "AAAAAAFZzPKv/H1p3N0="
+							},
+							"tail": {
+								"$ref": "AAAAAAFZ7wnzYl2+Jxo="
+							},
+							"lineStyle": 1,
+							"points": "166:376;375:406"
 						}
 					]
 				}
