@@ -36,11 +36,7 @@ The main html to start application here.
           @apply(--layout-center-center);
       }
 
-      .logo {
-        width: 350px;
-        height: 50%px; 
-      }
-
+     
       [hidden] {
         display: none !important;
       }
@@ -70,8 +66,8 @@ The main html to start application here.
 
           <app-toolbar> 
             <paper-icon-button class="menu-button" icon="menu" drawer-toggle hidden$="{{wideLayout}}"></paper-icon-button>
-            <div class="spacer"> 
-              <iron-image src="{{config.logo}}" class="logo" alt="{{config.logo}}"></iron-image>
+            <div class="spacer horizontal vertical justified">  
+              <iron-image src="{{config.logo}}"  alt="{{config.logo}}"></iron-image>
             </div>
           </app-toolbar>
 
