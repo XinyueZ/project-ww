@@ -87,7 +87,7 @@ The main html to start application here.
 
 
         <!--<iron-pages  attr-for-selected="name">-->
-            <ww-list items="{{listItems}}"></ww-list>
+            <ww-list items="{{listItems}}" config="{{config}}"></ww-list>
         <!--</iron-pages>-->
       </app-header-layout>
     </app-drawer-layout>
@@ -105,8 +105,7 @@ The main html to start application here.
       properties: {
 
         selected: {
-          type: String,
-          value: '0'
+          type: String
         },
 
         wideLayout: {

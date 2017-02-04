@@ -4,10 +4,16 @@ Show single item in the ww-list.html
 
 <link rel="import" href="imports.html"> 
 
-<dom-module id="ww-item-list"> 
+<dom-module id="ww-item-list">  
   <template>   
-        <paper-card heading="{{item.title}}"  style="width:300px; height:300px; margin:10px;" alt="{{item.title}}"  image="{{item.imageUrl}}" >  
-    
+        <paper-card heading="{{item.title}}"  style="font-family: 'Roboto', sans-serif;width:300px; height:350px; margin:10px;" alt="{{item.title}}"  image="{{item.imageUrl}}" >
+            <div class="card-actions">
+                <div class="horizontal vertical justified">
+                     <paper-icon-button src="{{config.ic_shopping_cart}}"></paper-icon-button> 
+                     <paper-icon-button src="{{config.ic_fav_item}}"></paper-icon-button> 
+                     <paper-icon-button src="{{config.ic_share}}"></paper-icon-button> 
+                </div>
+            </div>
         </paper-card> 
   </template>
 
@@ -29,8 +35,7 @@ Show single item in the ww-list.html
         item: {
             type: Object
         }
-
-    }
+    } 
 
   });
 
