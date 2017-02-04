@@ -1,0 +1,39 @@
+<!--
+Show single item in the ww-list.html
+-->
+
+<link rel="import" href="imports.html"> 
+
+<dom-module id="ww-item-list"> 
+  <template>   
+        <paper-card heading="{{item.title}}"  style="width:300px; height:300px; margin:10px;" alt="{{item.title}}"  image="{{item.imageUrl}}" >  
+    
+        </paper-card> 
+  </template>
+
+  <script>
+
+  Polymer({
+
+    is: 'ww-item-list',
+
+    properties: {
+
+        /**
+         * Current item that will be shown.
+         *
+         * @attribute item
+         * @type object
+         * 
+         */
+        item: {
+            type: Object
+        }
+
+    }
+
+  });
+
+  </script>
+
+</dom-module>

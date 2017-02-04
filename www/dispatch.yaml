@@ -1,0 +1,8 @@
+application: project-ww
+
+dispatch:
+  - url: "*/_ah/spi/*"
+    module: default
+
+  - url: "*/*"
+    module: frontend

@@ -1,0 +1,42 @@
+<!--
+Show list of items of current category.
+-->
+ 
+<link rel="import" href="imports.html">
+<link rel="import" href="ww-item-list.html">
+
+<dom-module id="ww-list">
+  <template>
+    <style>
+      :host {
+        display: block; 
+        padding: 10px;
+      }
+
+      
+    </style>  
+ 
+
+    <iron-list id="list"   items="[[items]]"  as="item"  style="width:100%; height:100%;" grid>
+        <template>
+            <ww-item-list item="{{item}}"></ww-item-list>
+        </template>
+    </iron-list>
+  </template>
+ 
+  <script>
+    Polymer({
+        is: 'ww-list',
+        /**
+         * List of items to show.
+         *
+         * @attribute items
+         * @type Array
+         * 
+         */
+        items: {
+            type: Array
+        } 
+    });
+  </script>
+</dom-module>
