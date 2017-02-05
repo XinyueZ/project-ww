@@ -41,9 +41,8 @@ The main html to start application here.
         display: none !important;
       }
 
-    </style>
-    <iron-ajax url="https://dl.dropboxusercontent.com/s/54arlpsbur2xsv7/config.json?dl=0" auto last-response="{{config}}"   handle-as="json"   on-response="_handleConfigResponse"></iron-ajax>
-    <iron-ajax auto url="{{apiUrl}}" handle-as="json" on-response="_handleAPIResponse" last-response="{{apiRes}}"  id="apiReq"></iron-ajax>
+    </style> 
+    <iron-ajax auto url="{{apiUrl}}" handle-as="json" on-response="_handleAPIResponse" last-response="{{apiRes}}"></iron-ajax>
     <app-drawer-layout force-narrow>
 
       <app-drawer id="drawer">
@@ -125,11 +124,7 @@ The main html to start application here.
           drawer.opened = false;
         }
       },
-
-      _handleConfigResponse: function() {
-        console.info("_handleConfigResponse", this.config);
-      },
-
+ 
       _handleTabsSelected: function(e) {
           console.info("_handleTabsSelected: " + this.selected );
 

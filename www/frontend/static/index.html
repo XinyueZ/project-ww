@@ -26,7 +26,8 @@ Here is start of application.
   <body unresolved>
     <template is="dom-bind">
 
-      <x-app>
+      <iron-ajax url="https://dl.dropboxusercontent.com/s/54arlpsbur2xsv7/config.json?dl=0" auto last-response="{{config}}"   handle-as="json"  ></iron-ajax>  
+      <x-app config="{{config}}">
       </x-app>
 
     </template>
