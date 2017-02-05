@@ -104,8 +104,8 @@ The main html to start application here.
           <app-toolbar class="tabs-bar" hidden$="{{!wideLayout}}">
             <!-- Nav on desktop: tabs -->
             <paper-tabs  selected="{{selected}}" on-iron-select = "_handleTabsSelected">
-              <template is="dom-repeat" items="{{items}}">
-                <paper-tab name="{{item}}">{{item}}</paper-tab>
+              <template is="dom-repeat" items="{{tabs}}" as="tab">
+                <paper-tab name="{{tab}}">{{tab}}</paper-tab>
               </template>
             </paper-tabs>
           </app-toolbar> 
@@ -139,14 +139,7 @@ The main html to start application here.
           type: Boolean,
           value: false,
           observer: 'onLayoutChange',
-        },
-
-        items: {
-          type: Array,
-          value: function() {
-            return ['Black', 'Blue', 'Red', 'Personalized'];
-          }
-        }
+        } 
       },
 
  
@@ -164,7 +157,10 @@ The main html to start application here.
           this.apiUrl = host + apiList[apiIndex].path; 
       },
 
-      _handleTabsSelected: function(e) {
+      _handleTabsSelected: function() {
+          if (typeof this.config == "undefined")
+            return;
+
           console.info( "_handleTabsSelected" , "_handleTabsSelected: " + this.selected );
           console.info( "_handleTabsSelected" , "this.config: " + this.config);
 
@@ -189,7 +185,15 @@ The main html to start application here.
       _handleConfigResponse: function() {
         this.$.loadPb.disabled = true;
         this.$.loadPb.hidden=true;          
-          this._loadListFeeds(0);
+        this._loadListFeeds(0);
+             
+        console.info( "_handleConfigResponse" , "this.config: " + this.config); 
+        var apiList = this.config.api; 
+        console.info( "_handleConfigResponse" , "apiList: " + apiList); 
+        this.tabs = new Array();
+        for (var index = 0; index < apiList.length; ++index) { 
+          this.push("tabs", apiList[index].name)
+        }
       }
     });
 
