@@ -84,8 +84,8 @@ The main html to start application here.
 
         <!-- Nav on mobile: side nav menu -->
         <paper-menu selected="{{selected}}"  on-iron-select = "_handleTabsSelected">
-          <template is="dom-repeat" items="{{items}}">
-            <paper-item name="{{item}}">{{item}}</paper-item>
+          <template is="dom-repeat" items="{{tabs}}" as = "tab">
+            <paper-item name="{{tab}}">{{tab}}</paper-item>
           </template>
         </paper-menu>
 
