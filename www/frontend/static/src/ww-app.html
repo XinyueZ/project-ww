@@ -130,6 +130,10 @@ The main html to start application here.
       is: 'x-app',
 
       properties: { 
+        selected : {
+          type: String,
+          value: "0"
+        },
 
         wideLayout: {
           type: Boolean,
@@ -154,19 +158,25 @@ The main html to start application here.
         }
       },
  
-      _handleTabsSelected: function(e) {
-          this.$.loadPb.hidden=false;
-          this.$.loadPb.disabled = false;
-          console.info("_handleTabsSelected: " + this.selected );
-          console.info("_handleTabsSelected this.config: " , this.config);
-
+      _loadListFeeds: function(apiIndex) {
           var host = this.config.host;
           var apiList = this.config.api;
-          this.apiUrl = host + apiList[this.selected].path;
+          this.apiUrl = host + apiList[apiIndex].path; 
+      },
 
-          console.info("apiUrl: " + this.apiUrl); 
+      _handleTabsSelected: function(e) {
+          console.info( "_handleTabsSelected" , "_handleTabsSelected: " + this.selected );
+          console.info( "_handleTabsSelected" , "this.config: " + this.config);
 
-          this.$.app-drawer.close();
+
+          this.$.loadPb.hidden=false;
+          this.$.loadPb.disabled = false;
+          this.$.app-drawer.close(); 
+
+          this._loadListFeeds(this.selected);
+
+
+          console.info( "_handleTabsSelected", "apiUrl: " + this.apiUrl); 
       },
 
       _handleAPIResponse: function() {
@@ -178,7 +188,8 @@ The main html to start application here.
 
       _handleConfigResponse: function() {
         this.$.loadPb.disabled = true;
-        this.$.loadPb.hidden=true;
+        this.$.loadPb.hidden=true;          
+          this._loadListFeeds(0);
       }
     });
 
