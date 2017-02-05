@@ -83,7 +83,7 @@ The main html to start application here.
         </app-toolbar>
 
         <!-- Nav on mobile: side nav menu -->
-        <paper-menu selected="{{selected}}" attr-for-selected="name">
+        <paper-menu selected="{{selected}}"  on-iron-select = "_handleTabsSelected">
           <template is="dom-repeat" items="{{items}}">
             <paper-item name="{{item}}">{{item}}</paper-item>
           </template>
@@ -165,6 +165,8 @@ The main html to start application here.
           this.apiUrl = host + apiList[this.selected].path;
 
           console.info("apiUrl: " + this.apiUrl); 
+
+          this.$.app-drawer.close();
       },
 
       _handleAPIResponse: function() {
