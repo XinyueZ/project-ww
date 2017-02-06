@@ -49,12 +49,7 @@ The main html to start application here.
         text-transform: uppercase;
       }
 
-
-      .logo {
-        width: 50%;
-        height: 50%; 
-      }
-
+ 
       paper-progress {
         width: 100%; 
       }
@@ -95,9 +90,9 @@ The main html to start application here.
         <app-header class="main-header">
 
           <app-toolbar> 
+                <paper-icon-button class="menu-button"   icon="menu" drawer-toggle hidden$="{{wideLayout}}"></paper-icon-button>
             <div class="spacer">  
-            <paper-icon-button class="menu-button" icon="menu" drawer-toggle hidden$="{{wideLayout}}"></paper-icon-button>
-              <iron-image src="{{config.logo}}"  ></iron-image>
+                <div style= 'font-family: "Brush Script MT",cursive;font-size: 1.5em;'>{{config.appName}}</div>
             </div>
           </app-toolbar>
 
@@ -112,9 +107,9 @@ The main html to start application here.
         </app-header>
 
 
-          <paper-progress   id="loadPb"indeterminate class="blue"></paper-progress>
+          <paper-progress   id="loadPb" indeterminate class="blue"></paper-progress>
         <!--<iron-pages  attr-for-selected="name">-->
-            <ww-list items="{{listItems}}" config="{{config}}"></ww-list>
+            <ww-list   items="{{listItems}}" config="{{config}}"></ww-list>
         <!--</iron-pages>-->
       </app-header-layout>
     </app-drawer-layout>

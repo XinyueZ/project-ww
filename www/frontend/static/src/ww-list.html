@@ -6,18 +6,9 @@ Show list of items of current category.
 <link rel="import" href="ww-item-list.html">
 
 <dom-module id="ww-list">
-  <template>
-    <style>
-      :host {
-        display: block; 
-        padding: 10px;
-      }
+  <template> 
 
-      
-    </style>  
- 
-
-    <iron-list id="list"   items="[[items]]"  as="item"  style="width:100%; height:100%;" grid>
+    <iron-list id="list"   items="[[items]]"  as="item"   grid>
         <template>
             <ww-item-list item="{{item}}" config="{{config}}"></ww-item-list>
         </template>
