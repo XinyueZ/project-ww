@@ -8,7 +8,7 @@ Show list of items of current category.
 <dom-module id="ww-list">
   <template> 
 
-    <iron-list id="list"   items="[[items]]"  as="item"   grid>
+    <iron-list id="list"   scroll-target="document"  items="[[items]]"  as="item"   grid>
         <template>
             <ww-item-list item="{{item}}" config="{{config}}"></ww-item-list>
         </template>
