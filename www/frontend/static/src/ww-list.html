@@ -10,7 +10,7 @@ Show list of items of current category.
 
     <iron-list id="list"   scroll-target="document"  items="[[items]]"  as="item"   grid>
         <template>
-            <ww-item-list item="{{item}}" config="{{config}}"></ww-item-list>
+            <ww-item-list category="[[category]]" item="[[item]]" config="[[config]]"></ww-item-list>
         </template>
     </iron-list>
   </template>
@@ -18,16 +18,39 @@ Show list of items of current category.
   <script>
     Polymer({
         is: 'ww-list',
-        /**
-         * List of items to show.
-         *
-         * @attribute items
-         * @type Array
-         * 
-         */
-        items: {
-            type: Array
-        } 
+
+        properties: {
+          /**
+          * List of items to show.
+          *
+          * @attribute items
+          * @type Array
+          * 
+          */
+          items: {
+              type: Array
+          },
+
+          /**
+          * Current category item that will be shown.
+          *
+          * @attribute category
+          * @type String
+          * 
+          */
+          category: {
+              type: String
+          },
+
+          /**
+          * App config
+          *
+          * @attribute config
+          * @type Object
+          * 
+          */
+          config: Object
+        }
     });
   </script>
 </dom-module>

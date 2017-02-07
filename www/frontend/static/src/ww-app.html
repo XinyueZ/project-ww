@@ -4,6 +4,7 @@ The main html to start application here.
 
 <link rel="import" href="imports.html"> 
 <link rel="import" href="ww-list.html">
+<link rel="import" href="ww-detail-item-list.html">
 
 <dom-module id="x-app">
 
@@ -67,8 +68,27 @@ The main html to start application here.
 
     </style> 
 
+
     <iron-ajax url="https://dl.dropboxusercontent.com/s/54arlpsbur2xsv7/config.json?dl=0" auto last-response="{{config}}"   handle-as="json"  on-response="_handleConfigResponse" ></iron-ajax>  
-    <iron-ajax auto url="{{apiUrl}}" handle-as="json" on-response="_handleAPIResponse" last-response="{{apiRes}}"></iron-ajax>
+    <iron-ajax auto url="[[apiUrl]]" handle-as="json" on-response="_handleAPIResponse" last-response="{{apiRes}}"></iron-ajax>
+    
+    
+    <app-location route="{{appRoute}}" on-route-changed="_onLocationchanged" use-hash-as-path></app-location>
+    <app-route
+        route="{{appRoute}}"
+        pattern=":action"
+        data="{{actionData}}"
+        tail="{{subAppRoute}}"></app-route>
+    <app-route
+        route="{{subAppRoute}}"
+        pattern="/:category"
+        data="{{categoryData}}"
+        tail="{{subsubAppRoute}}"></app-route>
+    <app-route
+          route="{{subsubAppRoute}}"
+          pattern="/:itemId"
+          data="{{idData}}"></app-route>
+
     <app-drawer-layout force-narrow>
 
       <app-drawer id="drawer" swipe-open>
@@ -108,9 +128,16 @@ The main html to start application here.
 
 
           <paper-progress   id="loadPb" indeterminate class="blue"></paper-progress>
-        <!--<iron-pages  attr-for-selected="name">-->
-            <ww-list   items="{{listItems}}" config="{{config}}"></ww-list>
-        <!--</iron-pages>-->
+          <iron-pages id="pages" selected="[[page]]" attr-for-selected="name">
+             <!-- detail of item -->
+            <template is="dom-if" if="[[_equal(page, 'detail')]]">   
+                <ww-detail-item-list name="detail" config="[[config]]" category= "[[category]]" item-id="[[idData.itemId]]"></ww-detail-item-list>
+            </template>
+            <!-- list of items -->
+            <template is="dom-if" if="[[_equal(page, 'list')]]">
+              <ww-list name="list" items="[[listItems]]" config="[[config]]" category="[[category]]"></ww-list>
+            </template>
+          </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
 
@@ -125,6 +152,13 @@ The main html to start application here.
       is: 'x-app',
 
       properties: { 
+        /**
+         * Current selecte tab index.
+         *
+         * @attribute selected
+         * @type String
+         * 
+         */
         selected : {
           type: String,
           value: "0"
@@ -134,7 +168,29 @@ The main html to start application here.
           type: Boolean,
           value: false,
           observer: 'onLayoutChange',
-        } 
+        },
+
+        /**
+         * Current view, list or detail
+         *
+         * @attribute page
+         * @type String
+         * 
+         */
+        page: {
+          type: String, 
+          default: "list", 
+          reflectToAttribute: true
+        },
+
+        /**
+         * App config
+         *
+         * @attribute config
+         * @type Object
+         * 
+         */
+        config: Object
       },
 
  
@@ -144,12 +200,18 @@ The main html to start application here.
         if (wide && drawer.opened) {
           drawer.opened = false;
         }
+      }, 
+      
+      _equal: function(a, b) {
+        return a === b;
       },
- 
+
       _loadListFeeds: function(apiIndex) {
           var host = this.config.host;
           var apiList = this.config.api;
           this.apiUrl = host + apiList[apiIndex].path; 
+          this.category = apiList[apiIndex].name;
+          console.info( "_loadListFeeds" , "this.category : " + this.category  );
       },
 
       _handleTabsSelected: function() {
@@ -175,9 +237,10 @@ The main html to start application here.
         this.listItems = this.apiRes.items;
         this.$.loadPb.disabled = true;
         this.$.loadPb.hidden=true;
+        this.page="list";
       },
 
-      _handleConfigResponse: function() {
+      _handleConfigResponse: function() { 
         this.$.loadPb.disabled = true;
         this.$.loadPb.hidden=true;          
         this._loadListFeeds(0);
@@ -191,6 +254,20 @@ The main html to start application here.
         }
 
         this.fire("on-config-loaded", this.config);
+      },
+
+      _onLocationchanged : function(e) {
+        console.info("_onLocationchanged","e.detail:" +  e.detail );
+        if (typeof this.appRoute != "undefined") {
+          console.info("_onLocationchanged","this.appRoute:" +  this.appRoute );
+          console.info("_onLocationchanged","this.appRoute.path:" +  this.appRoute.path );
+          console.info("_onLocationchanged","this.actionData:" +  this.actionData);
+          console.info("_onLocationchanged","this.categoryData:" +  this.categoryData);
+          console.info("_onLocationchanged","this.idData:" +  this.idData );
+          if(this._equal(this.actionData.action, "openItemDetail")) {
+            this.page = "detail";
+          }
+        }
       }
     });
 

@@ -1,0 +1,184 @@
+<!--
+Show here details of one item.
+-->
+
+<link rel="import" href="imports.html"> 
+
+<dom-module id="ww-detail-item-list">
+
+  <template>
+
+    <style>
+
+      :host {
+        display: block;
+      }
+
+      .image {
+        height: 240px;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: contain;
+      }
+
+      .header {
+        position: relative;
+        padding: 24px 0;
+        text-align: center;
+        font-size: 14px;
+        letter-spacing: 1px;
+        color: #999;
+      }
+
+      .title {
+        padding: 16px 0;
+        font-size: 30px;
+        font-weight: 600;
+      }
+
+      paper-fab {
+        position: absolute;
+        top: -28px;;
+        right: 40px;
+        background-color: var(--app-primary-color);
+      }
+
+      .main {
+        padding: 24px 80px;
+        border-top: 1px solid #ddd;
+        font-size: 18px;
+        line-height: 32px;
+        letter-spacing: 1px;
+      }
+
+      h3 {
+        font-size: 24px;
+        font-weight: 400;
+        line-height: 32px;
+      }
+
+      /* narrow layout */
+      @media (max-width: 808px) {
+
+        .main {
+          padding: 24px;
+        }
+
+        /* position fab to the bottom right corner of the screen */
+        paper-fab {
+          position: fixed;
+          top: auto;
+          right: 24px;
+          bottom: 24px;
+        }
+
+      }
+
+    </style>
+
+    <style is="custom-style"> 
+        paper-button.green {
+            background-color: var(--paper-green-500);
+            color: white;
+        } 
+    </style>
+
+    <iron-ajax auto url="[[apiUrl]]" handle-as="json" on-response="_handleItemDetailResponse" last-response="{{apiRes}}"></iron-ajax>
+ 
+    <!--<div class="image" style$="background-color: {{article.primaryColor}}; background-image: url('{{article.image}}')"></div>-->
+    <div class="image" style$="background-image: url('[[item.imageUrl]]')"></div>
+    <div class="header"> 
+        <div class="title" style$="color: #B0BEC5;">[[category]]//[[item.title]]</div>
+        <paper-button class="custom green">[[item.price]]</paper-button>  
+        <paper-fab src="[[config.ic_shopping_cart]]"  ></paper-fab>
+    </div>
+
+    <section class="main">
+      <h3>[[item.title]]</h3>
+      <p>[[item.description]]</p>
+    </section>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+        is: 'ww-detail-item-list',                                                                                                                                                                 
+
+        properties: {
+
+            /**
+            * Current item that will be shown.
+            *
+            * @attribute item
+            * @type object
+            * 
+            */
+            item: {
+                type: Object
+            },
+            /**
+            * Current category item that will be shown.
+            *
+            * @attribute category
+            * @type String
+            * 
+            */
+            category: {
+                type: String
+            },
+
+            /**
+            * App config
+            *
+            * @attribute config
+            * @type Object
+            * 
+            */
+            config: Object,
+
+            /**
+            * Identify of current shown item
+            *
+            * @attribute itemId
+            * @type String
+            * 
+            */
+            itemId: String
+
+        },
+
+        attached: function() {
+            var apiList = this.config.api; 
+            for (var index = 0; index < apiList.length; ++index) { 
+                if(this._equal(this.category, apiList[index].name)) {
+                    var host = this.config.host;
+                    var apiList = this.config.api;
+                    this.apiUrl = host + apiList[index].path; 
+                    return;
+                }
+            }
+        },
+
+        _handleItemDetailResponse: function() {
+            console.info("_handleItemDetailResponse:", "Detail: " + this.apiRes)
+            console.info("_handleItemDetailResponse:", "Want item by id: " + this.itemId)
+            var items = this.apiRes.items;
+            for(var index = 0; index < items.length; index++) {
+                if(this._equal(items[index].id, this.itemId))  {
+                    this.item = items[index];
+                    console.info("_handleItemDetailResponse:", "Show item: " + this.item.imageUrl);
+                    return;
+                }
+            }
+        },
+
+        _equal: function(a, b) {
+            return a === b;
+        },
+    });
+
+  </script>
+
+</dom-module>
