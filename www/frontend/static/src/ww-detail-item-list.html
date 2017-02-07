@@ -90,12 +90,13 @@ Show here details of one item.
         } 
     </style>
 
-    <iron-ajax auto url="[[apiUrl]]" handle-as="json" on-response="_handleItemDetailResponse" last-response="{{apiRes}}"></iron-ajax>
+    <iron-ajax auto url="[[apiUrl]]" verbose handle-as="json" on-response="_handleItemDetailResponse"   last-response="{{apiRes}}"></iron-ajax>
  
     <!--<div class="image" style$="background-color: {{article.primaryColor}}; background-image: url('{{article.image}}')"></div>-->
     <div class="image" style$="background-image: url('[[item.imageUrl]]'); background-color:{{config.clr_general_detail}}"></div>
     <div class="header"> 
         <div class="title" style$="color: #B0BEC5;">[[category]]//[[item.title]]</div>
+        <div>No. [[item.id]]</div>
         <paper-button class="custom green">[[item.price]]</paper-button>  
         <paper-fab src="[[config.ic_shopping_cart]]"  ></paper-fab>
     </div>
@@ -133,7 +134,8 @@ Show here details of one item.
             * 
             */
             category: {
-                type: String
+                type: String,
+                observer: '_loadDetailForcelly'
             },
 
             /**
@@ -143,7 +145,10 @@ Show here details of one item.
             * @type Object
             * 
             */
-            config: Object,
+            config: {
+                type: Object,
+                observer: '_loadDetail'
+            },
 
             /**
             * Identify of current shown item
@@ -152,25 +157,41 @@ Show here details of one item.
             * @type String
             * 
             */
-            itemId: String
+            itemId: {
+                type: String,
+                observer: '_loadDetail'
+            }
 
         },
+       
 
-        attached: function() {
+        _loadDetail: function() {
+            if (typeof this.apiRes != "undefined") {
+                this._handleItemDetailResponse();
+                return;
+            }
+            this._loadDetailForcelly();
+        },
+
+        _loadDetailForcelly: function() {
+            if (typeof this.config == "undefined") {
+                return;
+            }
+            console.info("_loadDetailForcelly:", "Want item by id: " + this.itemId);
             var apiList = this.config.api; 
             for (var index = 0; index < apiList.length; ++index) { 
                 if(this._equal(this.category, apiList[index].name)) {
                     var host = this.config.host;
                     var apiList = this.config.api;
-                    this.apiUrl = host + apiList[index].path; 
+                    this.set("apiUrl", host + apiList[index].path);
+                    console.info("_loadDetailForcelly:", "on: " + this.apiUrl);
                     return;
                 }
             }
         },
 
         _handleItemDetailResponse: function() {
-            console.info("_handleItemDetailResponse:", "Detail: " + this.apiRes)
-            console.info("_handleItemDetailResponse:", "Want item by id: " + this.itemId)
+            console.info("_handleItemDetailResponse:", "Detail: " + this.apiRes);
             var items = this.apiRes.items;
             for(var index = 0; index < items.length; index++) {
                 if(this._equal(items[index].id, this.itemId))  {

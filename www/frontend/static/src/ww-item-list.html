@@ -37,20 +37,20 @@ Show single item in the ww-list.html
           background-color: white;
         }
     </style>
-  <template>  
-        <a href$="#openItemDetail/[[category]]/[[item.id]]" class="item" aria-label$="More information about [[item.title]]">
-            <paper-card heading="[[item.title]]"  style="font-family: 'Abril Fatface', cursive; font-size: 1em; width:300px; height:360px; margin:10px;" alt="[[item.title]]"  image="[[item.imageUrl]]" >
-                    <div class="card-actions">
-                        <div class="horizontal vertical justified">
-                            <paper-icon-button src="[[config.ic_shopping_cart]]"></paper-icon-button> 
-                            <paper-icon-button src="[[config.ic_unfav_item]]"></paper-icon-button> 
-                            <paper-icon-button src="[[config.ic_share]]"></paper-icon-button> 
-                            <paper-button class="custom green" style="float:right;">[[item.price]]</paper-button>  
-                        </div> 
-                    </div>
-            </paper-card> 
-         </a>
-  </template>
+    <template>  
+            <a href$="#openItemDetail/[[category]]/[[item.id]]" class="item" aria-label$="More information about [[item.title]]">
+                <paper-card heading="[[item.title]]"  style="font-family: 'Abril Fatface', cursive; font-size: 1em; width:300px; height:360px; margin:10px;" alt="[[item.title]]"  image="[[item.imageUrl]]" >
+                        <div class="card-actions">
+                            <div class="horizontal vertical justified">
+                                <paper-icon-button src="[[config.ic_shopping_cart]]"></paper-icon-button> 
+                                <paper-icon-button src="[[config.ic_unfav_item]]"></paper-icon-button> 
+                                <paper-icon-button src="[[config.ic_share]]"></paper-icon-button> 
+                                <paper-button class="custom green" style="float:right;">[[item.price]]</paper-button>  
+                            </div> 
+                        </div>
+                </paper-card> 
+            </a>
+    </template>
 
   <script>
 

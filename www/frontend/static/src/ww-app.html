@@ -91,7 +91,7 @@ The main html to start application here.
 
     <app-drawer-layout force-narrow>
 
-      <app-drawer id="drawer" swipe-open>
+      <app-drawer id="drawer" swipe-open$="[[_shouldSwipOpen(page, wideLayout)]]">
 
         <app-toolbar>
 
@@ -110,13 +110,20 @@ The main html to start application here.
         <app-header class="main-header">
 
           <app-toolbar> 
-                <paper-icon-button class="menu-button"   icon="menu" drawer-toggle hidden$="{{wideLayout}}"></paper-icon-button>
-            <div class="spacer">  
-                <div style= 'font-family: "Brush Script MT",cursive;font-size: 1.5em;'>{{config.appName}}</div>
-            </div>
+                <!--Hamburg menu-->
+                <paper-icon-button class="menu-button"   icon="menu" drawer-toggle hidden$="[[_shouldHiddenHamburgMenu(page, wideLayout)]]"></paper-icon-button>
+                <!-- back button -->
+                  <a 
+                    href="#back"
+                    hidden$="[[_equal(page, 'list')]]">
+                    <paper-icon-button src="[[config.ic_back]]"  hidden="[[!_shouldShowBack(page)]]"></paper-icon-button>
+                </a>
+                <div class="spacer">  
+                    <div style= 'font-family: "Brush Script MT",cursive;font-size: 1.5em;'>{{config.appName}}</div>
+                </div>
           </app-toolbar>
 
-          <app-toolbar class="tabs-bar" hidden$="{{!wideLayout}}">
+          <app-toolbar class="tabs-bar" hidden$="[[_shouldHiddenTabs(page, wideLayout)]]">
             <!-- Nav on desktop: tabs -->
             <paper-tabs  selected="{{selected}}" on-iron-select = "_handleTabsSelected">
               <template is="dom-repeat" items="{{tabs}}" as="tab">
@@ -131,7 +138,7 @@ The main html to start application here.
           <iron-pages id="pages" selected="[[page]]" attr-for-selected="name">
              <!-- detail of item -->
             <template is="dom-if" if="[[_equal(page, 'detail')]]">   
-                <ww-detail-item-list name="detail" config="[[config]]" category= "[[category]]" item-id="[[idData.itemId]]"></ww-detail-item-list>
+                <ww-detail-item-list   name="detail" config="[[config]]" category= "[[category]]" item-id="[[idData.itemId]]"></ww-detail-item-list>
             </template>
             <!-- list of items -->
             <template is="dom-if" if="[[_equal(page, 'list')]]">
@@ -193,7 +200,7 @@ The main html to start application here.
         config: Object
       },
 
- 
+
       onLayoutChange: function(wide) {
         var drawer = this.$.drawer;
 
@@ -256,6 +263,22 @@ The main html to start application here.
         this.fire("on-config-loaded", this.config);
       },
 
+      _shouldHiddenTabs : function(page, wide) {
+          return this._equal( page, 'detail') || ! wide;
+      },
+
+      _shouldHiddenHamburgMenu: function(page, wide) {
+          return this._equal( page, 'detail') || wide;
+      },
+
+      _shouldShowBack: function(page) {
+          return this._equal( page, 'detail');
+      },
+
+      _shouldSwipOpen: function(page, wide) {
+          return this._equal( page, 'list') && !wide;
+      },
+
       _onLocationchanged : function(e) {
         console.info("_onLocationchanged","e.detail:" +  e.detail );
         if (typeof this.appRoute != "undefined") {
@@ -263,9 +286,16 @@ The main html to start application here.
           console.info("_onLocationchanged","this.appRoute.path:" +  this.appRoute.path );
           console.info("_onLocationchanged","this.actionData:" +  this.actionData);
           console.info("_onLocationchanged","this.categoryData:" +  this.categoryData);
-          console.info("_onLocationchanged","this.idData:" +  this.idData );
-          if(this._equal(this.actionData.action, "openItemDetail")) {
-            this.page = "detail";
+          console.info("_onLocationchanged","this.idData:" +  this.idData ); 
+
+          //Event-handler for navigation
+          switch(this.actionData.action) {
+            case "openItemDetail":            
+              this.page = "detail";  
+            break;
+            case "back":
+               this.page = "list"; 
+            break;
           }
         }
       }
