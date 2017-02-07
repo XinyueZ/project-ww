@@ -33,7 +33,13 @@ Here is start of application.
 
     <script>
         document.addEventListener('on-config-loaded', function(e) {
-          document.title = e.detail.appName;
+          var config =  e.detail;
+          document.title = config.appName;
+          var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+              link.type = 'image/x-icon';
+              link.rel = 'shortcut icon';
+              link.href = config.logo.ico;
+              document.getElementsByTagName('head')[0].appendChild(link);
         });
     </script>
 </html>
