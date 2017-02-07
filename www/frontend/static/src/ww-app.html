@@ -189,6 +189,8 @@ The main html to start application here.
         for (var index = 0; index < apiList.length; ++index) { 
           this.push("tabs", apiList[index].name)
         }
+
+        this.fire("on-config-loaded", this.config);
       }
     });
 

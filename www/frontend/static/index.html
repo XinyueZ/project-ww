@@ -3,8 +3,7 @@ Here is start of application.
 -->
 <html>
 <head>
-
-  <title>Navigation transformation</title>
+ 
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
@@ -31,4 +30,10 @@ Here is start of application.
 
     </template>
   </body>
+
+    <script>
+        document.addEventListener('on-config-loaded', function(e) {
+          document.title = e.detail.appName;
+        });
+    </script>
 </html>
