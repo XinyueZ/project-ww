@@ -145,6 +145,7 @@ The main html to start application here.
               <ww-list name="list" items="[[listItems]]" config="[[config]]" category="[[category]]"></ww-list>
             </template>
           </iron-pages>
+          <paper-toast id="toast"></paper-toast>
       </app-header-layout>
     </app-drawer-layout>
 
@@ -213,6 +214,11 @@ The main html to start application here.
         return a === b;
       },
 
+      _openToast: function(message) {
+        this.$.toast.text = message;
+        this.$.toast.open();
+      },
+
       _loadListFeeds: function(apiIndex) {
           var host = this.config.host;
           var apiList = this.config.api;
@@ -245,6 +251,8 @@ The main html to start application here.
         this.$.loadPb.disabled = true;
         this.$.loadPb.hidden=true;
         this.page="list";
+
+        this._openToast(this.listItems.length + " items have been loaded.");
       },
 
       _handleConfigResponse: function() { 
