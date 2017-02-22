@@ -1,0 +1,17 @@
+application: project-ww
+module: backoffice
+runtime: python27
+threadsafe: yes
+version: 1
+
+
+api_version: 1
+
+handlers:
+- url: /
+  static_files: static/index.html
+  upload: static/index.html
+  secure: always
+- url: /
+  static_dir: static
+  secure: always
