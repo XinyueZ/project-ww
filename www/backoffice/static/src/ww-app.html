@@ -1,4 +1,5 @@
 <link rel="import" href="imports.html"> 
+<link rel="import" href="ww-login.html"> 
 
 <dom-module id="ww-app">
 
@@ -7,7 +8,14 @@
     <style>
 
       app-toolbar {
-        background-color: #dcdcdc;
+        background-color: #000000;
+      }
+
+       paper-toolbar.main {
+        --paper-toolbar-background: #000000;
+        --paper-toolbar-title: { 
+          font-weight: bold;
+        };
       }
 
       .main-header {
@@ -31,11 +39,21 @@
 
     </style>
 
+    <iron-ajax url="https://dl.dropboxusercontent.com/s/rb91rvvjzp5nruv/config.json" auto last-response="{{config}}"   handle-as="json"></iron-ajax>  
+    
+    <firebase-app 
+      name="project-ww"
+      auth-domain="project-ww.firebaseapp.com"
+      database-url="https://project-ww.firebaseio.com"
+      api-key="AIzaSyCj83P7yS3iBotMY5YH8c0X63GWfEckais"></firebase-app> 
+ 
+
     <app-drawer-layout force-narrow>
 
       <app-drawer id="drawer">
 
-        <app-toolbar></app-toolbar>
+        <app-toolbar>
+        </app-toolbar>
 
         <!-- Nav on mobile: side nav menu -->
         <paper-menu selected="{{selected}}" attr-for-selected="name">
@@ -48,23 +66,14 @@
 
       <app-header-layout>
         <app-header class="main-header">
-
-          <app-toolbar>
-            <paper-icon-button class="menu-button" icon="menu" drawer-toggle hidden$="{{wideLayout}}"></paper-icon-button>
-          </app-toolbar>
-
-          <app-toolbar class="tabs-bar" hidden$="{{!wideLayout}}">
-            <!-- Nav on desktop: tabs -->
-            <paper-tabs selected="{{selected}}" attr-for-selected="name">
-              <template is="dom-repeat" items="{{items}}">
-                <paper-tab name="{{item}}">{{item}}</paper-tab>
-              </template>
-            </paper-tabs>
-          </app-toolbar>
-
-        </app-header>
+          <paper-toolbar class="main">
+            <paper-icon-button class="menu-button" icon="menu" drawer-toggle></paper-icon-button>
+            <span class="title">[[config.appName]]</span>
+            <ww-login config="[[config]]"></ww-login>
+          </paper-toolbar>
+        </app-header> 
+        <paper-toast id="toast"></paper-toast>
       </app-header-layout>
-
     </app-drawer-layout>
 
     <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
@@ -79,9 +88,13 @@
 
       properties: {
 
+        config: {
+          type: Object
+        },
+
         selected: {
           type: String,
-          value: 'Item One'
+          value: "0"
         },
 
         wideLayout: {
@@ -93,11 +106,16 @@
         items: {
           type: Array,
           value: function() {
-            return ['Item One', 'Item Two', 'Item Three', 'Item Four', 'Item Five'];
+            return ['New product'];
           }
         }
       },
 
+      openToast: function(message) {
+        this.$.toast.text = message;
+        this.$.toast.open();
+      },
+      
       onLayoutChange: function(wide) {
         var drawer = this.$.drawer;
 

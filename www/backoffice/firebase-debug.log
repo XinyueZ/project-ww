@@ -1,0 +1,28 @@
+[debug] ----------------------------------------------------------------------
+[debug] Command:      /usr/local/Cellar/node/7.4.0/bin/node /usr/local/bin/firebase serve
+[debug] CLI Version:  3.3.0
+[debug] Platform:     darwin
+[debug] Node Version: v7.4.0
+[debug] Time:         Thu Feb 23 2017 09:48:25 GMT+0100 (CET)
+[debug] ----------------------------------------------------------------------
+[debug] 
+[info] Starting Firebase development server...
+[info] 
+[info] Project Directory: /Users/xzhao/Desktop/zxy/project-ww/www/backoffice
+[info] Public Directory: static
+[info] 
+[info] Server listening at: http://localhost:5000
+[debug] ----------------------------------------------------------------------
+[debug] Command:      /usr/local/Cellar/node/7.4.0/bin/node /usr/local/bin/firebase serve
+[debug] CLI Version:  3.3.0
+[debug] Platform:     darwin
+[debug] Node Version: v7.4.0
+[debug] Time:         Thu Feb 23 2017 16:15:17 GMT+0100 (CET)
+[debug] ----------------------------------------------------------------------
+[debug] 
+[info] Starting Firebase development server...
+[info] 
+[info] Project Directory: /Users/xzhao/Desktop/zxy/project-ww/www/backoffice
+[info] Public Directory: static
+[info] 
+[info] Server listening at: http://localhost:5000

@@ -1,0 +1,93 @@
+<link rel="import" href="imports.html"> 
+
+<dom-module id="ww-login">
+  <template>
+    <style>  
+        paper-avatar.profi {
+            --paper-avatar-width: 35px;
+        }
+
+        paper-item {
+            font-size: 1em;
+            font-family: 'Roboto Thin'
+        }
+
+        div.loginName {
+            font-size: 0.9em;
+            font-family: 'Roboto Thin'
+        }
+    </style>
+    <firebase-auth
+        id="auth"
+        provider="google"
+        user="{{user}}"
+        app-name="project-ww"
+        provider="google"
+        status-known="{{statusKnown}}"
+        on-error="_handleAuthError"></firebase-auth>
+
+    <div class="loginName" >[[user.displayName]]
+    <paper-menu-button horizontalAlign="right" >
+        <paper-icon-button id="loginMenu" src="[[config.ic_person]]" class="dropdown-trigger"></paper-icon-button>
+        <paper-menu class="dropdown-content">
+            <paper-item hidden$="[[user]]" on-tap="_loginTap" >Login</paper-item>
+            <paper-item hidden$="[[!user]]" on-tap="_logoutTap">Logout</paper-item>
+            <paper-item>About</paper-item>
+        </paper-menu>
+    </paper-menu-button></div>
+ </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'ww-login',
+
+      properties: {
+
+        user : {
+            type: Object,
+            observer: "_userChangedObserver"
+        },
+
+        statusKnown: {
+            type: Object
+        },
+
+        config: {
+            type: Object
+        }
+      },  
+
+      _loginTap: function() {
+        this.$.auth.signInWithPopup()
+        .then(function(response) {
+            console.info("signInWithPopup.then 1", response);
+            console.info("signInWithPopup.then 2", response.user.photoURL); 
+        })
+        .catch(function(error) {
+            console.info("signInWithPopup.error 1", error); 
+        });
+      },
+      
+      _logoutTap: function() {
+        this.user = null;
+        this.$.auth.signOut();
+      }, 
+
+      _userChangedObserver: function() {
+        console.info("_userChangedObserver 1");
+        if( this.user != null && this.user.photoURL != null) {
+            console.info("_userChangedObserver 2", this.user.photoURL);
+            this.$.loginMenu.src = this.user.photoURL;
+        } else {
+            if(this.config != null && this.config.ic_person != null) {
+                this.$.loginMenu.src = this.config.ic_person;
+            }
+        }
+      }
+    });
+  </script>
+
+
+</dom-module>
