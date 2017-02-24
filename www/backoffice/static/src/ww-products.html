@@ -2,16 +2,11 @@
 
 <dom-module id="ww-products">
     <style is="custom-style"> 
-        paper-toolbar.card {
-            --paper-toolbar-background: #ffffff;
+        paper-toolbar.grey {
+            --paper-toolbar-background: grey;
             --paper-toolbar-title: { 
             font-weight: bold;
-        } 
-        paper-button.green {
-            background-color: var(--paper-green-500);
-            --paper-button-ink-color: #31f0ef;
-            color:white;
-        }
+        }  
     </style>
     <template>
         <firebase-query
@@ -21,27 +16,19 @@
             data="{{products}}"
         ></firebase-query>
 
- 
-        <paper-card  style="margin: 18px;">
-            <paper-toolbar class="custom card">
+
+        <paper-card  style="width:1000px; height:1000px;  margin: 18px;">
+             <paper-toolbar class="grey">
                 <span class="title">Products</span>
-                <paper-menu-button id = "menu" horizontalAlign="right" >
-                    <paper-icon-button id="loginMenu" src="[[config.ic_more]]" class="dropdown-trigger"></paper-icon-button>
-                    <paper-menu class="dropdown-content">
-                        <paper-item   on-tap="_listTap" >List</paper-item> 
-                    </paper-menu>
-                </paper-menu-button>
+                <paper-icon-button src="[[config.ic_listview]]"  on-tap="_listTap"></paper-icon-button> 
+                <paper-icon-button id = "addBtn" src="[[config.ic_save_file]]" on-tap="_onAdd"></paper-icon-button> 
             </paper-toolbar>
             <div  style="padding: 18px ;">
                 <div id="sheet">
-                    <paper-input id="name" label="Name" required auto-validate error-message="Product needs name."></paper-input>
-                    <paper-input id="basePrice" label="Basic price" required auto-validate error-message="Product needs basic price."></paper-input>
-                </div>
-                <div id="controls">
-                    <paper-button  raised class="custom green"  on-tap="_onAdd" >Add</paper-button>
-                </div>
-            </div>
-
+                    <paper-input id="productName" label="Name" ></paper-input>
+                    <paper-input id="basePrice" label="Basic price"  ></paper-input>
+                </div> 
+            </div> 
         </paper-card>
 
         <paper-dialog id="listDialog" style="width:90%; margin: 100px">
@@ -59,6 +46,13 @@
                 <paper-button dialog-confirm autofocus>Close</paper-button>
             </div>
         </paper-dialog>
+
+        <paper-dialog id="warningDialog" no-overlap horizontal-align="left" vertical-align="top">
+            <h2>Notice</h2>
+            <paper-dialog-scrollable>
+                [[warningText]]      
+            </paper-dialog-scrollable>
+        </paper-dialog>
     </template>
 
     <script>
@@ -68,18 +62,34 @@
             properties: {  
                 config: {
                     type: Object
+                },
+
+                warningText: {
+                    type: String
                 }
             },
 
             _onAdd: function() {
+                this.warningText = null;
+                if(this.$.productName.value == "") { 
+                    this.warningText = "You must give name of product.";
+                    this.$.warningDialog.positionTarget = this.$.productName;
+                    this.$.warningDialog.open();
+                    return;
+                } else if(this.$.basePrice.value == null) {
+                    this.warningText = "You must give base-price of product.";
+                    this.$.warningDialog.positionTarget = this.$.basePrice;
+                    this.$.warningDialog.open(); 
+                    return;
+                }
                 this.$.query.ref.push(
                     {
                         id: this._guid(),
-                        name: this.$.name.value,
+                        name: this.$.productName.value,
                         basePrice: this.$.basePrice.value,
                     }
                 );
-                this.$.name.value = null;
+                this.$.productName.value = null;
                 this.$.basePrice.value = null;
             },
 
@@ -94,8 +104,7 @@
                 this._s4() + this._s4()  + '-' +this._s4()  + this._s4();
             },
 
-            _listTap: function() {
-                this.$.menu.close();
+            _listTap: function() { 
                 this.$.listDialog.open();
             }
         })

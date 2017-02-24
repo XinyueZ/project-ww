@@ -2,16 +2,11 @@
 
 <dom-module id="ww-brands">
     <style is="custom-style"> 
-        paper-toolbar.card {
-            --paper-toolbar-background: #ffffff;
+        paper-toolbar.grey {
+            --paper-toolbar-background: grey;
             --paper-toolbar-title: { 
             font-weight: bold;
-        }
-        paper-button.green {
-            background-color: var(--paper-green-500);
-            --paper-button-ink-color: #31f0ef;
-            color:white;
-        }
+        } 
     </style>
     <template>
         <firebase-query
@@ -21,14 +16,14 @@
             data="{{brands}}"
         ></firebase-query>
 
-        <paper-card style="width:600px; height:500px; margin: 18px;">
-            <paper-toolbar class="custom card">
+        <paper-card style="width:1000px; height:1000px;  margin: 18px;">
+            <paper-toolbar class="grey">
                 <span class="title">Brands</span>
                 <paper-icon-button src="[[config.ic_listview]]"  on-tap="_listTap"></paper-icon-button> 
                 <paper-icon-button id = "addBtn" src="[[config.ic_save_file]]" on-tap="_onAdd"></paper-icon-button> 
             </paper-toolbar>
             <div  id="sheet" style="padding: 18px;"> 
-                    <paper-input id="name" label="Brand-name"></paper-input>
+                    <paper-input id="brandName" label="Brand-name"></paper-input>
                     <paper-input id="logo"  label="Brand-logo" disabled></paper-input> 
                     <input type="file" accept="image/*" value="upload" id="fileUpload" on-change="_uploadPayload"/> 
             </div>
@@ -104,20 +99,21 @@
 
             _onAdd: function() { 
                 this.warningText = null;
-                if(this.file == null) {
-                    this.warningText = "You must upload logo of brand.";
-                } else if(this.$.name.value == null) { 
+                if(this.$.brandName.value == "") { 
                     this.warningText = "You must give name of brand.";
-                }
-                if(this.warningText != null) {
-                    this.$.warningDialog.positionTarget = this.$.addBtn;
+                    this.$.warningDialog.positionTarget = this.$.brandName;
                     this.$.warningDialog.open(); 
                     return;
-                }
+                } else if(this.file == null) {
+                    this.warningText = "You must upload logo of brand.";
+                    this.$.warningDialog.positionTarget = this.$.logo;
+                    this.$.warningDialog.open(); 
+                    return;
+                }     
                 this.$.query.ref.push(
                     {
                         id: this._guid(),
-                        name: this.$.name.value,
+                        name: this.$.brandName.value,
                         logo: this.$.logo.value,
                     }
                 ); 
@@ -127,7 +123,7 @@
                     this._uploadError,
                     this._uploadComplete
                 );
-                this.$.name.value = null;
+                this.$.brandName.value = null;
                 this.$.logo.value = null;
             },
 
