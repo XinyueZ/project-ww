@@ -24,8 +24,8 @@
         <paper-card style="width:600px; height:500px; margin: 18px;">
             <paper-toolbar class="custom card">
                 <span class="title">Brands</span>
-                <paper-icon-button src="[[config.ic_listview]]" on-tap="_listTap"></paper-icon-button> 
-                <paper-icon-button src="[[config.ic_save_file]]" on-tap="_onAdd"></paper-icon-button> 
+                <paper-icon-button src="[[config.ic_listview]]"  on-tap="_listTap"></paper-icon-button> 
+                <paper-icon-button id = "addBtn" src="[[config.ic_save_file]]" on-tap="_onAdd"></paper-icon-button> 
             </paper-toolbar>
             <div  id="sheet" style="padding: 18px;"> 
                     <paper-input id="name" label="Brand-name"></paper-input>
@@ -50,6 +50,14 @@
                 <paper-button dialog-confirm autofocus>Close</paper-button>
             </div>
         </paper-dialog>
+
+
+        <paper-dialog id="warningDialog" no-overlap horizontal-align="left" vertical-align="top">
+            <h2>Notice</h2>
+            <paper-dialog-scrollable>
+                [[warningText]]      
+            </paper-dialog-scrollable>
+        </paper-dialog>
     </template>
 
     <script>
@@ -65,6 +73,9 @@
                 },
                 uploadTask: {
                     type: Object
+                },
+                warningText: {
+                    type: String
                 }
             },
 
@@ -91,7 +102,18 @@
                 this.uploadTask = null;
             },
 
-            _onAdd: function() {
+            _onAdd: function() { 
+                this.warningText = null;
+                if(this.file == null) {
+                    this.warningText = "You must upload logo of brand.";
+                } else if(this.$.name.value == null) { 
+                    this.warningText = "You must give name of brand.";
+                }
+                if(this.warningText != null) {
+                    this.$.warningDialog.positionTarget = this.$.addBtn;
+                    this.$.warningDialog.open(); 
+                    return;
+                }
                 this.$.query.ref.push(
                     {
                         id: this._guid(),
@@ -116,7 +138,7 @@
             },
 
             _guid: function () { 
-            return this._s4() + this._s4() + '-' + this._s4() + this._s4() + '-' +
+                return this._s4() + this._s4() + '-' + this._s4() + this._s4() + '-' +
                 this._s4() + this._s4()  + '-' +this._s4()  + this._s4();
             },
 
@@ -128,16 +150,13 @@
                 var metadata = {
                     contentType: 'image/png;image/jpeg;image/jpg;image/svg+xml',
                 };
-
-                //Get image
+ 
                 this.file = e.target.files[0];
-
-                //create a storage reference
+ 
                 var storage = firebase.storage();
                 var storageRef = storage.ref();
-                var storageChildRef = storageRef.child('brands/' + this.file.name);
+                var storageChildRef = storageRef.child('brands/' + this.file.name); 
 
-                //store the image
                 this.uploadTask = storageChildRef.put(this.file, metadata);
                 this.$.logo.value = this.file.name;
             }
