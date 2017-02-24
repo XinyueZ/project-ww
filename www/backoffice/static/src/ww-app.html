@@ -1,6 +1,7 @@
 <link rel="import" href="imports.html"> 
 <link rel="import" href="ww-login.html"> 
 <link rel="import" href="ww-products.html"> 
+<link rel="import" href="ww-brands.html"> 
 
 <dom-module id="ww-app">
 
@@ -40,7 +41,7 @@
 
     </style>
 
-    <iron-ajax url="https://dl.dropboxusercontent.com/s/rb91rvvjzp5nruv/config.json" auto last-response="{{config}}"   handle-as="json"></iron-ajax>  
+    <iron-ajax url="https://dl.dropboxusercontent.com/s/rb91rvvjzp5nruv/config.json" auto last-response="{{config}}"   handle-as="json" on-response="_handleConfigResponse"></iron-ajax>  
     
     <firebase-app 
       name="[[config.databaseAppName]]"
@@ -57,7 +58,7 @@
         </app-toolbar>
 
         <!-- Nav on mobile: side nav menu -->
-        <paper-menu selected="{{selected}}" attr-for-selected="name">
+        <paper-menu selected="{{selected}}"  on-iron-select = "_handleTabsSelected">
           <template is="dom-repeat" items="{{items}}">
             <paper-item name="{{item}}">{{item}}</paper-item>
           </template>
@@ -74,7 +75,16 @@
           </paper-toolbar>
         </app-header> 
 
-        <ww-products config="[[config]]"></ww-products>
+        <iron-pages id="pages" selected="[[page]]" attr-for-selected="name">
+             <!-- Products -->
+            <template name="products"  is="dom-if" if="products">   
+                <ww-products name="products" config="[[config]]"></ww-products>
+            </template>
+            <!-- Brands -->
+            <template name="brands" is="dom-if" if="brands">
+              <ww-brands name="brands" config="[[config]]"></ww-brands>
+            </template>
+        </iron-pages>
         <paper-toast id="toast"></paper-toast>
       </app-header-layout>
     </app-drawer-layout>
@@ -113,9 +123,23 @@
         items: {
           type: Array,
           value: function() {
-            return ['New product'];
+            return ["Products", "Brands"];
           }
+        },
+
+        /**
+         * Current view, list or detail
+         *
+         * @attribute page
+         * @type String
+         * 
+         */
+        page: {
+          type: String, 
+          default: "products", 
+          reflectToAttribute: true
         }
+
       },
 
       openToast: function(message) {
@@ -129,6 +153,26 @@
         if (wide && drawer.opened) {
           drawer.opened = false;
         }
+      },
+   
+      _handleTabsSelected: function() {
+          if (typeof this.config == "undefined")
+            return;  
+          // this.$.loadPb.hidden=false;
+          // this.$.loadPb.disabled = false;
+          this.$.drawer.close();   
+          switch(this.selected) {
+            case 0:
+              this.page = "products";
+            break;
+            case 1:
+              this.page = "brands";
+            break;
+          }
+      },
+
+      _handleConfigResponse: function() { 
+          this.page="products";
       }
     });
 
