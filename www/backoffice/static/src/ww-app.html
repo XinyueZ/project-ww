@@ -1,5 +1,6 @@
 <link rel="import" href="imports.html"> 
 <link rel="import" href="ww-login.html"> 
+<link rel="import" href="ww-products.html"> 
 
 <dom-module id="ww-app">
 
@@ -42,9 +43,9 @@
     <iron-ajax url="https://dl.dropboxusercontent.com/s/rb91rvvjzp5nruv/config.json" auto last-response="{{config}}"   handle-as="json"></iron-ajax>  
     
     <firebase-app 
-      name="project-ww"
-      auth-domain="project-ww.firebaseapp.com"
-      database-url="https://project-ww.firebaseio.com"
+      name="[[config.databaseAppName]]"
+      auth-domain="[[config.databaseAuthDomain]]"
+      database-url="[[config.databaseUrl]]"
       api-key="AIzaSyCj83P7yS3iBotMY5YH8c0X63GWfEckais"></firebase-app> 
  
 
@@ -72,6 +73,8 @@
             <ww-login config="[[config]]"></ww-login>
           </paper-toolbar>
         </app-header> 
+
+        <ww-products config="[[config]]"></ww-products>
         <paper-toast id="toast"></paper-toast>
       </app-header-layout>
     </app-drawer-layout>
@@ -87,6 +90,10 @@
       is: 'ww-app',
 
       properties: {
+
+        products: {
+          type: Object
+        },
 
         config: {
           type: Object

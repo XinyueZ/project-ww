@@ -1,0 +1,100 @@
+<link rel="import" href="imports.html"> 
+
+<dom-module id="ww-products">
+    <template>
+         <style> 
+            paper-toolbar.card {
+                --paper-toolbar-background: #ffffff;
+                --paper-toolbar-title: { 
+                font-weight: bold;
+            }
+        </style>
+        <firebase-query
+            id = "query"
+            app-name="[[config.databaseAppName]]"
+            path="/products"
+            data="{{products}}"
+        ></firebase-query>
+
+
+        <paper-card  style="margin: 18px;">
+            <paper-toolbar class="card">
+                <span class="title"></span>
+                <paper-menu-button id = "menu" horizontalAlign="right" >
+                    <paper-icon-button id="loginMenu" src="[[config.ic_more]]" class="dropdown-trigger"></paper-icon-button>
+                    <paper-menu class="dropdown-content">
+                        <paper-item   on-tap="_listTap" >List</paper-item> 
+                    </paper-menu>
+                </paper-menu-button>
+            </paper-toolbar>
+            <div  style="padding: 18px ;">
+                <div id="sheet">
+                    <paper-input id="name" label="Name" required auto-validate error-message="Product needs name"></paper-input>
+                    <paper-input id="basePrice" label="Basic price" required auto-validate error-message="Product needs basic price"></paper-input>
+                </div>
+                <div id="controls">
+                    <paper-button id = "addProduct" raised on-tap="_onAddProduct">Add</paper-button>
+                </div>
+            </div>
+
+        </paper-card>
+
+
+
+        <paper-dialog id="listDialog" style="width:90%; margin: 100px">
+            <h1>List</h1>
+            <paper-dialog-scrollable> 
+                    <paper-listbox>
+                        <template is="dom-repeat" items="[[products]]" as="product"> 
+                            <paper-item>
+                               [[product.id]] | [[product.name]] |  [[product.basePrice]]
+                            </paper-item>
+                        </template> 
+                    <paper-listbox>
+            </paper-dialog-scrollable>
+            <div class="buttons">
+                <paper-button dialog-confirm autofocus>Close</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'ww-products', 
+
+            properties: {  
+                config: {
+                    type: Object
+                }
+            },
+
+            _onAddProduct: function() {
+                this.$.query.ref.push(
+                    {
+                        id: this._guid(),
+                        name: this.$.name.value,
+                        basePrice: this.$.basePrice.value,
+                    }
+                );
+                this.$.name.value = null;
+                this.$.basePrice.value = null;
+            },
+
+            _s4 : function () {
+                return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+            },
+
+            _guid: function () { 
+            return this._s4() + this._s4() + '-' + this._s4() + this._s4() + '-' +
+                this._s4() + this._s4()  + '-' +this._s4()  + this._s4();
+            },
+
+            _listTap: function() {
+                this.$.menu.close();
+                this.$.listDialog.open();
+            }
+        })
+    </script>
+</dom-module>

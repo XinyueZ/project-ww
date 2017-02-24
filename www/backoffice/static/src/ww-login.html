@@ -21,7 +21,7 @@
         id="auth"
         provider="google"
         user="{{user}}"
-        app-name="project-ww"
+        app-name="[[config.databaseAppName]]"
         provider="google"
         status-known="{{statusKnown}}"
         on-error="_handleAuthError"></firebase-auth>
@@ -58,6 +58,10 @@
             type: Object
         }
       },  
+
+      attached: function () {
+        this._userChangedObserver();
+      },
 
       _loginTap: function() {
         this.$.auth.signInWithPopup()
