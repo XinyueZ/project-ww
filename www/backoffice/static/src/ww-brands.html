@@ -21,28 +21,16 @@
             data="{{brands}}"
         ></firebase-query>
 
-        <paper-card style="margin: 18px;">
+        <paper-card style="width:600px; height:500px; margin: 18px;">
             <paper-toolbar class="custom card">
                 <span class="title">Brands</span>
-                <paper-menu-button id = "menu" horizontalAlign="right" >
-                    <paper-icon-button id="loginMenu" src="[[config.ic_more]]" class="dropdown-trigger"></paper-icon-button>
-                    <paper-menu class="dropdown-content">
-                        <paper-item   on-tap="_listTap" >List</paper-item> 
-                    </paper-menu>
-                </paper-menu-button>
+                <paper-icon-button src="[[config.ic_listview]]" on-tap="_listTap"></paper-icon-button> 
+                <paper-icon-button src="[[config.ic_save_file]]" on-tap="_onAdd"></paper-icon-button> 
             </paper-toolbar>
-            <div  style="padding: 18px;">
-                <div id="sheet">
-                    <paper-input id="name" label="Name" required auto-validate error-message="Brands has a name."></paper-input>
-                    <paper-input id="url"  label="Logo" required auto-validate error-message="Logo"></paper-input>
-                                
-                    <label for="uploadBrandLogo">Logo select here:</label> 
-                    <input type="file" accept="image/*" value="upload" id="fileUpload" on-change="_upload"/> 
-
-                </div>
-                <div id="controls">
-                    <paper-button   raised class="custom green" on-tap="_onAdd" >Add</paper-button>
-                </div>
+            <div  id="sheet" style="padding: 18px;"> 
+                    <paper-input id="name" label="Brand-name"></paper-input>
+                    <paper-input id="logo"  label="Brand-logo" disabled></paper-input> 
+                    <input type="file" accept="image/*" value="upload" id="fileUpload" on-change="_uploadPayload"/> 
             </div>
         </paper-card>
 
@@ -74,7 +62,33 @@
                 },
                 file: {
                     type: Object
+                },
+                uploadTask: {
+                    type: Object
                 }
+            },
+
+            _uploadNext : function(snapshot) {},
+            _uploadError : function(error) {
+                switch (error.code) {
+                    case 'storage/object_not_found':
+                        console.info("storage/object_not_found");
+                        break;
+                    case 'storage/unauthorized':
+                        console.info("storage/unauthorized");
+                        break;
+                    case 'storage/canceled':
+                        console.info("storage/canceled");
+                        break;
+                    case 'storage/unknown':
+                        console.info("storage/unknown");
+                        break;
+                }
+            },
+
+            _uploadComplete : function() {
+                this.file = null;
+                this.uploadTask = null;
             },
 
             _onAdd: function() {
@@ -82,11 +96,17 @@
                     {
                         id: this._guid(),
                         name: this.$.name.value,
-                        url: this.$.url.value,
+                        logo: this.$.logo.value,
                     }
+                ); 
+                this.uploadTask.on(
+                    firebase.storage.TaskEvent.STATE_CHANGED,
+                    this._uploadNext,
+                    this._uploadError,
+                    this._uploadComplete
                 );
                 this.$.name.value = null;
-                this.$.url.value = null;
+                this.$.logo.value = null;
             },
 
             _s4 : function () {
@@ -100,12 +120,11 @@
                 this._s4() + this._s4()  + '-' +this._s4()  + this._s4();
             },
 
-            _listTap: function() {
-                this.$.menu.close();
+            _listTap: function() { 
                 this.$.listDialog.open();
             },
 
-            _upload: function(e) {
+            _uploadPayload: function(e) {
                 var metadata = {
                     contentType: 'image/png;image/jpeg;image/jpg;image/svg+xml',
                 };
@@ -119,23 +138,8 @@
                 var storageChildRef = storageRef.child('brands/' + this.file.name);
 
                 //store the image
-                var uploadTask = storageChildRef.put(this.file, metadata);
-                uploadTask.catch(function(error){
-                    switch (error.code) {
-                    case 'storage/object_not_found':
-                        console.info("storage/object_not_found");
-                        break;
-                    case 'storage/unauthorized':
-                        console.info("storage/unauthorized");
-                        break;
-                    case 'storage/canceled':
-                        console.info("storage/canceled");
-                        break;
-                    case 'storage/unknown':
-                        console.info("storage/unknown");
-                        break;
-                    } 
-                });
+                this.uploadTask = storageChildRef.put(this.file, metadata);
+                this.$.logo.value = this.file.name;
             }
         })
     </script>
