@@ -39,6 +39,11 @@
         display: none !important;
       }
 
+      .center {
+          @apply(--layout);
+          @apply(--layout-flex-auto);
+          @apply(--layout-center-center);
+        }
     </style>
 
     <iron-ajax url="https://dl.dropboxusercontent.com/s/rb91rvvjzp5nruv/config.json" auto last-response="{{config}}"   handle-as="json" on-response="_handleConfigResponse"></iron-ajax>  
@@ -47,6 +52,7 @@
       name="[[config.databaseAppName]]"
       auth-domain="[[config.databaseAuthDomain]]"
       database-url="[[config.databaseUrl]]"
+      storage-Bucket="[[config.databaseStorage]]"
       api-key="AIzaSyCj83P7yS3iBotMY5YH8c0X63GWfEckais"></firebase-app> 
  
 
@@ -75,7 +81,7 @@
           </paper-toolbar>
         </app-header> 
 
-        <iron-pages id="pages" selected="[[page]]" attr-for-selected="name">
+        <iron-pages class ="center"  id="pages" selected="[[page]]" attr-for-selected="name">
              <!-- Products -->
             <template name="products"  is="dom-if" if="products">   
                 <ww-products name="products" config="[[config]]"></ww-products>
