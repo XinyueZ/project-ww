@@ -1,0 +1,43 @@
+<link rel="import" href="imports.html"> 
+
+<dom-module id="ww-brand-list-item">
+    <style is="custom-style">
+        paper-card.rate { @apply(--layout-horizontal); margin: 15px;}
+        .rate-image {
+            width: 100px;
+            height: 170px; 
+            background-size: cover;
+        }
+        .rate-content {
+            @apply(--layout-flex);
+            float: left;
+        }
+        .rate-header { @apply(--paper-font-headline); }  
+    </style>
+    <template> 
+        <paper-item>  
+            <paper-card id = "card" class="rate" >
+                <div class="rate-image" style$ = "background-image: url([[brand.downloadUrl]])"  ></div>
+                <div class="rate-content">
+                    <div class="card-content">
+                        <div class="rate-header">[[brand.name]]</div>
+                        <div class="rate-name">[[brand.id]]</div> 
+                    </div> 
+                </div>
+            </paper-card>
+        </paper-item>
+    </template> 
+    <script>
+        Polymer({
+            is: "ww-brand-list-item",  
+            properties: {  
+                config: {
+                    type: Object
+                },
+                brand: {
+                    type: Object
+                } 
+            } 
+        })
+    </script>
+</dom-module>

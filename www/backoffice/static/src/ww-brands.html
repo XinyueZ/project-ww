@@ -1,4 +1,5 @@
 <link rel="import" href="imports.html"> 
+<link rel="import" href="ww-brand-list-item.html">
 
 <dom-module id="ww-brands">
     <style is="custom-style"> 
@@ -30,14 +31,12 @@
         </paper-card>
 
 
-        <paper-dialog id="listDialog" style="width:90%; margin: 100px">
+        <paper-dialog id="listDialog" style="margin: 100px">
             <h1>List</h1>
             <paper-dialog-scrollable> 
                     <paper-listbox>
-                        <template is="dom-repeat" items="[[brands]]" as="brand"> 
-                            <paper-item>
-                               [[brand.id]] | [[brand.name]] | [[brand.logo]]
-                            </paper-item>
+                        <template is="dom-repeat" items="[[brands]]" as="brand">  
+                            <ww-brand-list-item config="[[config]]" brand="[[brand]]"></ww-brand-list-item>
                         </template> 
                     <paper-listbox>
             </paper-dialog-scrollable>
@@ -71,28 +70,26 @@
                 },
                 warningText: {
                     type: String
-                }
+                } 
+            },
+ 
+ 
+            created: function() {
+                this.addEventListener('on-upload-success', this._uploadedSuccess);
             },
 
-            _uploadNext : function(snapshot) {},
-            _uploadError : function(error) {
-                switch (error.code) {
-                    case 'storage/object_not_found':
-                        console.info("storage/object_not_found");
-                        break;
-                    case 'storage/unauthorized':
-                        console.info("storage/unauthorized");
-                        break;
-                    case 'storage/canceled':
-                        console.info("storage/canceled");
-                        break;
-                    case 'storage/unknown':
-                        console.info("storage/unknown");
-                        break;
-                }
-            },
+            _uploadedSuccess: function(snapshot) {
+                this.$.query.ref.push(
+                    {
+                        id: this._guid(),
+                        name: this.$.brandName.value,
+                        logo: this.$.logo.value,  
+                        downloadUrl: snapshot.detail.downloadURL,
+                    }
+                ); 
+                this.$.brandName.value = null;
+                this.$.logo.value = null;
 
-            _uploadComplete : function() {
                 this.file = null;
                 this.uploadTask = null;
             },
@@ -109,22 +106,28 @@
                     this.$.warningDialog.positionTarget = this.$.logo;
                     this.$.warningDialog.open(); 
                     return;
-                }     
-                this.$.query.ref.push(
-                    {
-                        id: this._guid(),
-                        name: this.$.brandName.value,
-                        logo: this.$.logo.value,
-                    }
-                ); 
+                }    
+
+                var self = this; 
                 this.uploadTask.on(
-                    firebase.storage.TaskEvent.STATE_CHANGED,
-                    this._uploadNext,
-                    this._uploadError,
-                    this._uploadComplete
+                    firebase.storage.TaskEvent.STATE_CHANGED, 
+                    function(snapshot) {
+                        self.set('progress', (snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                        console.log('Upload is ' + self.progress + '% done');
+                        switch (snapshot.state) {
+                        case firebase.storage.TaskState.PAUSED: // or 'paused'
+                            self.fire('on-upload-success-paused', snapshot);
+                            break;
+                        case firebase.storage.TaskState.RUNNING: // or 'running'
+                            self.fire('on-upload-success-running', snapshot);
+                            break; 
+                        }
+                    }, function(error) {
+                        self.fire('on-upload-success-error', error);
+                    }, function() {
+                        self.fire('on-upload-success', self.uploadTask.snapshot);
+                    }
                 );
-                this.$.brandName.value = null;
-                this.$.logo.value = null;
             },
 
             _s4 : function () {
